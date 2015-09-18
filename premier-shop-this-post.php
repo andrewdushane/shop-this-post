@@ -113,7 +113,7 @@ function premier_shop_this_post_markup( $content ) {
     if ( $shop_meta && $shop_meta != '' ) {
         $shop_display = '<div class="premier-shop-this-post" id="premier-shop-this-post-' . $postid . '">';
         $shop_display .= '<h4>Shop This Post</h4>';
-        $shop_display .= $shop_meta;
+        $shop_display .= do_shortcode( $shop_meta );
         $shop_display .= '</div>';
         return $shop_display;
     } else return false;

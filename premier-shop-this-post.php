@@ -39,13 +39,26 @@ function premier_shop_this_post_meta_box_callback( $post ) {
 	 * Use get_post_meta() to retrieve an existing value
 	 * from the database and use the value for the form.
 	 */
-	$value = get_post_meta( $post->ID, '_premier_shop_this_post', true );
-
-	echo '<label for="premier_shop_this_post_meta">';
+	$meta = get_post_meta( $post->ID, '_premier_shop_this_post', true );
+    if ( $meta && !is_array( $meta ) ) { //Preserve functionality when updating to new version of plugin
+        $title = 'Shop This Post';
+        $widget = $meta;
+    } elseif( is_array( $meta ) ) {
+        $title = $meta['title'];
+        $widget = $meta['widget'];
+    } else {
+        $title = '';
+        $widget = '';
+    }
+    echo '<label for="premier_shop_this_post_title">';
+    _e( 'Shop This Post Widget Title (Default: Shop This Post)', 'premier-shop-this-post' );
+    echo '</label><br>';
+    echo '<input type="text" id="premier_shop_this_post_title" name="premier_shop_this_post_title" class="regular-text" value="' . $title . '" />';
+	echo '<br><label for="premier_shop_this_post_widget">';
 	_e( 'Paste Shop This Post widget here:', 'premier-shop-this-post' );
 	echo '</label><br>';
-	echo '<textarea id="premier_shop_this_post_meta" name="premier_shop_this_post_meta" cols="80" rows="10" class="large-text">';
-    echo $value;
+	echo '<textarea id="premier_shop_this_post_widget" name="premier_shop_this_post_widget" cols="80" rows="10" class="large-text">';
+    echo $widget;
     echo '</textarea>';
 }
 
@@ -84,11 +97,15 @@ function premier_shop_this_post_save_meta_box( $post_id ) {
 	/* OK, it's safe for us to save the data now. */
 	
 	// Make sure that it is set.
-	if ( ! isset( $_POST['premier_shop_this_post_meta'] ) ) {
+	if ( ! isset( $_POST['premier_shop_this_post_widget'] ) ) {
 		return;
 	}
 
-	$update = $_POST['premier_shop_this_post_meta'];
+	$update = array();
+    if ( isset( $_POST['premier_shop_this_post_title'] ) ) {
+        $update['title'] = $_POST['premier_shop_this_post_title'];
+    } else $update['title'] = 'Shop This Post';
+    $update['widget'] = $_POST['premier_shop_this_post_widget'];
 
 	// Update the meta field in the database.
 	update_post_meta( $post_id, '_premier_shop_this_post', $update );
@@ -109,11 +126,18 @@ add_action( 'wp_enqueue_scripts' , 'premier_shop_this_post_style' );
  */
 function premier_shop_this_post_markup( $content ) {
     $postid = get_the_ID();
-    $shop_meta = get_post_meta( $postid, '_premier_shop_this_post', true );
-    if ( $shop_meta && $shop_meta != '' ) {
+    $meta = get_post_meta( $postid, '_premier_shop_this_post', true );
+    if ( $meta && !is_array( $meta ) ) { //Preserve functionality when updating to new version of plugin
+        $title = 'Shop This Post';
+        $widget = $meta;
+    } elseif( is_array( $meta ) ) {
+        $title = $meta['title'];
+        $widget = $meta['widget'];
+    }
+    if( isset( $widget ) ) {
         $shop_display = '<div class="premier-shop-this-post" id="premier-shop-this-post-' . $postid . '">';
-        $shop_display .= '<h4>Shop This Post</h4>';
-        $shop_display .= do_shortcode( $shop_meta );
+        $shop_display .= '<h4>' . $title . '</h4>';
+        $shop_display .= do_shortcode( $widget );
         $shop_display .= '</div>';
         return $shop_display;
     } else return false;

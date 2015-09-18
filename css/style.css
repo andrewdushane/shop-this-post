@@ -1,0 +1,11 @@
+.premier-shop-this-post {
+    width: 100%;
+    margin: .5em 0 1em;
+    clear: both;
+    float: none;
+}
+.premier-shop-this-post h4 {
+    text-align: center;
+    line-height: 1.5em;
+    text-transform: uppercase;
+}

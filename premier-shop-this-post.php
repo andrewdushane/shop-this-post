@@ -51,7 +51,7 @@ function premier_shop_this_post_meta_box_callback( $post ) {
         $widget = '';
     }
     echo '<label for="premier_shop_this_post_title">';
-    _e( 'Shop This Post Widget Title (Default: Shop This Post)', 'premier-shop-this-post' );
+    _e( 'Shop This Post Widget Title:', 'premier-shop-this-post' );
     echo '</label><br>';
     echo '<input type="text" id="premier_shop_this_post_title" name="premier_shop_this_post_title" class="regular-text" value="' . $title . '" />';
 	echo '<br><label for="premier_shop_this_post_widget">';
@@ -104,7 +104,7 @@ function premier_shop_this_post_save_meta_box( $post_id ) {
 	$update = array();
     if ( isset( $_POST['premier_shop_this_post_title'] ) ) {
         $update['title'] = $_POST['premier_shop_this_post_title'];
-    } else $update['title'] = 'Shop This Post';
+    }
     $update['widget'] = $_POST['premier_shop_this_post_widget'];
 
 	// Update the meta field in the database.
